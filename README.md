@@ -6,7 +6,12 @@
 
 这是一个使用php Curl 函数获取湖南理工学院信息服务部分纯查询内容（成绩、课表等），并进行简单页样式修改的小程序。
 
-曾经使用的域名包括但不限于http://hnist.ayumi.pw,http://cx.chauyuen.com
+曾经使用的域名包括但不限于
+
+http://hnist.ayumi.pw
+
+
+http://cx.chauyuen.com
 
 目前这些站点都已经下线，感谢大家在过去一年对我们的支持，由此给大家带来的不便，我们深表歉意。
 
