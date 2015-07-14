@@ -1,11 +1,15 @@
 <html>
 <?php 
-require_once("source/version.php");
+require_once("source/version.php");//统一引入版本号
+
+//清理Cookies避免数据错乱
 if(isset($_COOKIE["ACCOUNTID"])){
 setcookie ("SESSIONID", "", time() - 3600);
 }
 header("Content-type: text/html; charset=utf-8");
 ?>
+
+
 <head>
 <title>OAuth <?php echo $version ?></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,6 +32,7 @@ header("Content-type: text/html; charset=utf-8");
 		}
 </style>
 </head>
+<!--引入统计分析代码-->
 <?php require_once("source/piwik.html"); ?>
 <body>
 <div class="header">
@@ -39,6 +44,7 @@ header("Content-type: text/html; charset=utf-8");
 </div>
 <div class="am-g">
 <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+<!--输出错误信息-->
 <?php error_reporting(E_ALL & ~E_NOTICE); if($_GET['action']=='Exit'){echo '<p class="am-alert am-alert-success">您已成功退出，感谢您的使用！</p>'; } ?>
 <?php error_reporting(E_ALL & ~E_NOTICE); if($_GET['action']=='Relogin'){echo '<p class="am-alert am-alert-warning">很抱歉给您带来了不便，辛苦您重新登陆尝试一下。</p>'; } ?>
 <?php error_reporting(E_ALL & ~E_NOTICE); if($_GET['action']=='error'){echo '<p class="am-alert am-alert-danger">很抱歉,验证码不正确!</p>'; } ?>
@@ -51,7 +57,7 @@ header("Content-type: text/html; charset=utf-8");
 <label for="password">密码:</label>
 <input name="password" type="password" id="password" placeholder="·················" required="">
 <br />
-<!--
+<!-- 已经弃用的验证码模块
 <label for="captcha">验证码:</label><br/>
 <img src="images/z_imgcode.php" onclick="this.src=&quot;images/z_imgcode.php?&quot;+Math.random();">
 <input type="text" name="captcha" required>
@@ -62,9 +68,11 @@ header("Content-type: text/html; charset=utf-8");
 <a href="http://info.hnist.cn/userInfo2.html" target="_blank" name="" class="am-btn am-btn-default am-btn-sm am-fr">忘记密码 ^_^? </a>
 </div>
 </form>
+<!--引入备案号等统一信息-->
 <?php require_once("source/footer.html"); ?>
 </div>
 </div>
+<!--引入工单系统调用-->
 <?php require_once("source/kf5.html"); ?>
 </body>
 </html>

@@ -26,11 +26,14 @@ require_once("source/version.php");
 <?php
 require_once("source/piwik.html");
 define('SYSTEM_ROOT',dirname(__FILE__));
+//简单的安全判断，阻止低级的非法访问（验证码部分已经去除）
 if(isset($_SERVER['HTTP_REFERER'])){
 $usr=$_POST['username'];
 $pas=$_POST['password'];
+//定义Cookies临时文件位置
 $cookie_show = $_POST['username'].date('YmdHis');
 $cookie_file = constant("SYSTEM_ROOT").'/tmp/'.$cookie_show.'.tmp';
+//首次模拟登陆（61.187.92.235）,保存cookies
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://61.187.92.235/loginAction.do?userName=$usr&userPass=$pas");
 curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -38,10 +41,13 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_COOKIEJAR,  $cookie_file); 
 $ret = curl_exec($ch);
 curl_close($ch);
+//密码错误判断
 $pwc = stristr($ret,"window.alert");
 if (!$pwc)
 {
+//设定Cookies传递Cookies文件名
 setcookie("ACCOUNTID",$cookie_show,time()+3600);
+//发起跳转请求
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://61.187.92.235/roamingAction.do?appId=BKS_CJCX");
 curl_setopt($ch, CURLOPT_VERBOSE, 0); 
@@ -54,7 +60,9 @@ curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
 curl_setopt($ch, CURLOPT_COOKIEJAR,  $cookie_file); 
 $ret = curl_exec($ch); 
 curl_close($ch);
+//截取头部跳转Token
 $ret = substr($ret,239,36);
+//人工构造正确访问地址，模拟访问，保存cookies
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://61.187.92.238:7778/pls/wwwbks/bks_login2.loginbill?nAppType=3&p_bill=$ret");
 curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -65,6 +73,7 @@ curl_setopt($ch, CURLOPT_COOKIEJAR,  $cookie_file);
 $ret = curl_exec($ch);
 curl_close($ch);
 $nullc = stristr($ret,"Set-Cookie");
+//失败再循环
 if (!$nullc)
 {
 $ch = curl_init();
@@ -132,6 +141,7 @@ if (!$nullc)
 <div class="am-g">
 <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
 <?php
+//简单地根据时间出现问候语
 $h=date('G');
 if ($h<11) echo '早上好,';
 else if ($h<17) echo '下午好,';
@@ -147,6 +157,7 @@ echo "您可以进行以下操作,请选择。";
 <a href="do.php?action=Xjcx" target="_blank"><h3><img src="/source/icon/xjcx.png" class="icon am-radius"><br/>查学籍</h3></a>
 </div>
 <?php
+//自动隐藏成绩查询入口在不恰当的时候
 if(date("m")=="01"
    ||date("m")=="02"
    ||date("m")=="06"
